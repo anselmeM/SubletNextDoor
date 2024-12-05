@@ -1,84 +1,53 @@
-import { Camera, Upload } from 'lucide-react';
-import { Button } from '../components/ui/button';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ListingForm } from '@/components/listings/create/listing-form';
+import { ListingPreview } from '@/components/listings/create/listing-preview';
+import { useListingStore } from '@/lib/store/listing-store';
+import type { ListingFormData } from '@/lib/utils/validation';
 
 export function CreateListingPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<Partial<ListingFormData>>({});
+  const addListing = useListingStore((state) => state.addListing);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (data: ListingFormData) => {
+    try {
+      setIsSubmitting(true);
+      const newListing = addListing(data);
+      navigate(`/listings/${newListing.id}`);
+    } catch (error) {
+      console.error('Failed to create listing:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-bold text-gray-900">Create a New Listing</h1>
-      <p className="mt-2 text-gray-600">Fill out the details below to list your property.</p>
+      <p className="mt-2 text-gray-600">
+        Fill out the details below to list your property.
+      </p>
 
-      <form className="mt-8 space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-            Listing Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="e.g., Cozy Studio Near Campus"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Description
-          </label>
-          <textarea
-            id="description"
-            rows={4}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Describe your property..."
-          />
-        </div>
-
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-            Monthly Rent
-          </label>
-          <div className="relative mt-1 rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500">$</span>
-            </div>
-            <input
-              type="number"
-              id="price"
-              className="block w-full rounded-md border border-gray-300 pl-7 pr-12 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="0.00"
+      <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div className="space-y-6">
+          <div className="rounded-lg border bg-white p-6">
+            <ListingForm
+              onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+              onChange={setFormData}
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Photos</label>
-          <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 py-10">
-            <div className="text-center">
-              <Camera className="mx-auto h-12 w-12 text-gray-400" />
-              <div className="mt-4 flex text-sm text-gray-600">
-                <label
-                  htmlFor="file-upload"
-                  className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500"
-                >
-                  <span>Upload photos</span>
-                  <input id="file-upload" name="file-upload" type="file" className="sr-only" multiple />
-                </label>
-                <p className="pl-1">or drag and drop</p>
-              </div>
-              <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-            </div>
-          </div>
+        <div className="lg:sticky lg:top-8">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            Preview Your Listing
+          </h2>
+          <ListingPreview data={formData} />
         </div>
-
-        <div className="flex justify-end space-x-4">
-          <Button variant="outline" type="button">
-            Save as Draft
-          </Button>
-          <Button type="submit">
-            <Upload className="mr-2 h-4 w-4" />
-            Publish Listing
-          </Button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

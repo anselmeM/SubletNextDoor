@@ -1,11 +1,15 @@
-import { Home, LogIn, LogOut, Menu, Plus, User, UserPlus } from 'lucide-react';
+import { Home, LogIn, LogOut, Menu, Plus, User, UserPlus, MessageSquare, Bell } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useAuthStore } from '@/lib/store/auth-store';
+import { useNotificationStore } from '@/lib/store/notification-store';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore();
+  const unreadCount = useNotificationStore(
+    (state) => user ? state.getUnreadCount(user.id) : 0
+  );
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -36,6 +40,18 @@ export function Navbar() {
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
             {isAuthenticated ? (
               <>
+                <Button variant="outline" onClick={() => navigate('/messages')}>
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Messages
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/notifications')}>
+                  <Bell className="mr-2 h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <span className="ml-1 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Button>
                 <Button variant="outline" onClick={() => navigate('/create-listing')}>
                   <Plus className="mr-2 h-4 w-4" />
                   Create Listing
@@ -75,7 +91,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isMobileMenuOpen && (
         <div className="sm:hidden">
           <div className="space-y-1 pb-3 pt-2">
@@ -90,6 +105,27 @@ export function Navbar() {
             <div className="space-y-1 px-2">
               {isAuthenticated ? (
                 <>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => navigate('/messages')}
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Messages
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => navigate('/notifications')}
+                  >
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                    {unreadCount > 0 && (
+                      <span className="ml-2 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Button>
                   <Button
                     variant="outline"
                     className="w-full justify-start"

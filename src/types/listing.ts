@@ -1,12 +1,6 @@
-export interface Listing {
+export interface Listing extends ListingFormData {
   id: string;
-  title: string;
-  location: string;
-  price: number;
-  imageUrl: string;
   available: boolean;
-  propertyType: string;
-  amenities: string[];
   createdAt: string;
   rating?: number;
 }

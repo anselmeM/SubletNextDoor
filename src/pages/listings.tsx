@@ -5,8 +5,9 @@ import { ListingGrid } from '../components/listings/listing-grid';
 import { FiltersDialog } from '../components/listings/filters-dialog';
 import { SearchBar } from '../components/listings/search-bar';
 import { SortSelect } from '../components/listings/sort-select';
-import { Listing, ListingFilters, SortOption } from '@/types/listing';
-import { sortListings, getRandomRating, getRandomDate } from '@/lib/utils/listings';
+import { ListingFilters, SortOption } from '@/types/listing';
+import { sortListings } from '@/lib/utils/listings';
+import { useListingStore } from '@/lib/store/listing-store';
 
 const INITIAL_FILTERS: ListingFilters = {
   priceRange: [0, 5000],
@@ -14,27 +15,15 @@ const INITIAL_FILTERS: ListingFilters = {
   amenities: [],
 };
 
-// Mock data - would come from API in real app
-const MOCK_LISTINGS: Listing[] = Array.from({ length: 12 }).map((_, idx) => ({
-  id: `listing-${idx + 1}`,
-  title: `Student Apartment #${idx + 1}`,
-  location: idx % 2 === 0 ? 'University District' : 'Downtown Campus',
-  price: 1000 + (idx * 100),
-  imageUrl: `https://images.unsplash.com/photo-${1560448204 + idx}-e02f11c3d0e2?auto=format&fit=crop&q=80&w=600&h=400`,
-  available: true,
-  propertyType: idx % 4 === 0 ? 'Studio' : idx % 4 === 1 ? '1 Bedroom' : '2 Bedrooms',
-  amenities: ['WiFi', 'Furnished', idx % 2 === 0 ? 'Parking' : 'Laundry'],
-  rating: getRandomRating(),
-  createdAt: getRandomDate(),
-}));
-
 export function ListingsPage() {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<ListingFilters>(INITIAL_FILTERS);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
+  
+  const listings = useListingStore((state) => state.listings);
 
-  const filteredListings = MOCK_LISTINGS.filter((listing) => {
+  const filteredListings = listings.filter((listing) => {
     const matchesSearch = searchQuery === '' || 
       listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       listing.location.toLowerCase().includes(searchQuery.toLowerCase());

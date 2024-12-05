@@ -7,6 +7,7 @@ import { CreateListingPage } from './pages/create-listing';
 import { ProfilePage } from './pages/profile';
 import { LoginPage } from './pages/auth/login';
 import { RegisterPage } from './pages/auth/register';
+import { MessagesPage } from './pages/messages';
 import { HowItWorksPage } from './pages/info/how-it-works';
 import { SafetyGuidePage } from './pages/info/safety-guide';
 import { FAQPage } from './pages/info/faq';
@@ -31,6 +32,14 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <MessagesPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/create-listing"
             element={

@@ -1,4 +1,5 @@
 import { Home, Mail, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (
@@ -19,19 +20,19 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">Resources</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/how-it-works" className="text-gray-600 hover:text-gray-900">
                   How it Works
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/safety-guide" className="text-gray-600 hover:text-gray-900">
                   Safety Guide
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/faq" className="text-gray-600 hover:text-gray-900">
                   FAQs
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -40,19 +41,19 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">Legal</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/privacy-policy" className="text-gray-600 hover:text-gray-900">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/terms-of-service" className="text-gray-600 hover:text-gray-900">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
+                <Link to="/cookie-policy" className="text-gray-600 hover:text-gray-900">
                   Cookie Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
