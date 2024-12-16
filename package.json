@@ -14,6 +14,7 @@
     "@firebase/auth": "^1.8.1",
     "@firebase/firestore": "^4.7.5",
     "@firebase/storage": "^0.13.4",
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "@hookform/resolvers": "^3.3.4",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
