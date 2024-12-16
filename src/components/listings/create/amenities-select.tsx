@@ -1,46 +1,42 @@
-import { Check } from 'lucide-react'; // Importing the Check icon from lucide-react for indicating selected amenities
-import { Label } from '@/components/ui/label'; // Importing a custom Label component for form labeling
-import { AMENITIES } from '@/types/listing'; // Importing a list of available amenities from the listing types
+import { Check } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { AMENITIES } from '@/types/listing';
 
-// Interface defining the props for the AmenitiesSelect component
 interface AmenitiesSelectProps {
-  value: string[]; // Array of selected amenities
-  onChange: (value: string[]) => void; // Function to handle changes in selected amenities
-  error?: string; // Optional error message to display
+  value: string[];
+  onChange: (value: string[]) => void;
+  error?: string;
 }
 
-// AmenitiesSelect component for selecting amenities from a predefined list
 export function AmenitiesSelect({ value, onChange, error }: AmenitiesSelectProps) {
-  // Function to toggle the selection of an amenity
   const toggleAmenity = (amenity: string) => {
-    // If the amenity is already selected, remove it; otherwise, add it to the selection
     const newValue = value.includes(amenity)
       ? value.filter((a) => a !== amenity)
       : [...value, amenity];
-    onChange(newValue); // Call the onChange handler with the updated selection
+    onChange(newValue);
   };
 
   return (
-    <div className="space-y-2"> {/* Vertical spacing between elements */}
-      <Label required>Amenities</Label> {/* Label for the amenities selection */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3"> {/* Grid layout for amenity buttons */}
+    <div className="space-y-2">
+      <Label required>Amenities</Label>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {AMENITIES.map((amenity) => (
           <button
-            key={amenity} // Unique key for each amenity button
+            key={amenity}
             type="button"
-            onClick={() => toggleAmenity(amenity)} // Toggle selection on button click
+            onClick={() => toggleAmenity(amenity)}
             className={`flex items-center rounded-md border p-2 text-sm ${
               value.includes(amenity)
-                ? 'border-blue-500 bg-blue-50 text-blue-700' // Styling for selected amenities
-                : 'border-gray-200 hover:border-gray-300' // Styling for unselected amenities
+                ? 'border-blue-500 bg-blue-50 text-blue-700'
+                : 'border-gray-200 hover:border-gray-300'
             }`}
           >
-            {value.includes(amenity) && <Check className="mr-2 h-4 w-4" />} {/* Display check icon if selected */}
-            {amenity} {/* Display the amenity name */}
+            {value.includes(amenity) && <Check className="mr-2 h-4 w-4" />}
+            {amenity}
           </button>
         ))}
       </div>
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>} {/* Display error message if present */}
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 }

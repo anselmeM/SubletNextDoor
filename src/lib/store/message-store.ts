@@ -14,7 +14,7 @@ export interface Message {
 export interface Conversation {
   id: string;
   participants: string[];
-  lastMessage?: Message;
+  lastMessage: Message; 
   unreadCount: number;
 }
 
@@ -50,22 +50,27 @@ export const useMessageStore = create<MessageState>()(
             conversation = {
               id: generateId(),
               participants: [senderId, receiverId],
+              lastMessage: message, 
               unreadCount: 0,
             };
+          } else {
+            conversation.lastMessage = message; 
           }
 
-          // Update conversation
-          const updatedConversations = state.conversations.filter(
-            (c) => c.id !== conversation!.id
+          // Update conversation (using map)
+          const updatedConversations = state.conversations.map((c) =>
+            c.id === conversation.id ? conversation : c 
           );
-          conversation.lastMessage = message;
-          conversation.unreadCount += 1;
-          updatedConversations.unshift(conversation);
+
+          // Increment unread count (only if receiver is not sender)
+          if (receiverId !== senderId) {
+            conversation.unreadCount += 1;
+          }
 
           // Update messages
           const conversationMessages = state.messages[conversation.id] || [];
           return {
-            conversations: updatedConversations,
+            conversations: updatedConversations, 
             messages: {
               ...state.messages,
               [conversation.id]: [...conversationMessages, message],
@@ -77,9 +82,7 @@ export const useMessageStore = create<MessageState>()(
       markAsRead: (conversationId) => {
         set((state) => ({
           conversations: state.conversations.map((conv) =>
-            conv.id === conversationId
-              ? { ...conv, unreadCount: 0 }
-              : conv
+            conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv
           ),
           messages: {
             ...state.messages,

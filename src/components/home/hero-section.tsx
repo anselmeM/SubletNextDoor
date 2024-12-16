@@ -1,32 +1,57 @@
-import { Search } from 'lucide-react'; // Importing the Search icon from lucide-react for use in the search button
-import { Button } from '../ui/button'; // Importing a custom Button component for use in the search input
+import { useState } from 'react';
+import { Search } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useNavigate } from 'react-router-dom';
 
-// HeroSection component to display a prominent introductory section with a search feature
 export function HeroSection() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white"> {/* Background gradient for visual appeal */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"> {/* Container to center content and provide responsive padding */}
-        <div className="py-16 sm:py-24"> {/* Vertical padding for spacing */}
-          <div className="text-center"> {/* Center-aligning text content */}
+    <div className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="py-16 sm:py-24">
+          <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
               Find Your Perfect
-              <span className="block text-blue-600">Student Sublet</span> {/* Highlighted text for emphasis */}
+              <span className="block text-blue-600">Student Sublet</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-              Connect with fellow students to find or list the ideal short-term rental.
-              Verified listings, secure messaging, and hassle-free booking. {/* Description of the service */}
+              Connect with fellow students to find or list the ideal short-term
+              rental. Verified listings, secure messaging, and hassle-free
+              booking.
             </p>
 
-            <div className="mt-10"> {/* Margin for spacing above the search input */}
-              <div className="mx-auto max-w-xl rounded-full bg-white p-3 shadow-lg"> {/* Styling for the search input container */}
-                <div className="flex"> {/* Flexbox for aligning input and button horizontally */}
+            <div className="mt-10">
+              <div className="mx-auto max-w-xl rounded-full bg-white p-3 shadow-lg">
+                <div className="flex">
                   <input
                     type="text"
-                    placeholder="Search by university, neighborhood, or address..." // Placeholder text for search input
-                    className="w-full rounded-full px-4 focus:outline-none" // Styling for the search input
+                    placeholder="Search by university, neighborhood, or address..."
+                    className="w-full rounded-full px-4 focus:outline-none"
+                    value={searchQuery}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress} 
                   />
-                  <Button className="rounded-full px-6"> {/* Button component for triggering search */}
-                    <Search className="mr-2 h-4 w-4" /> {/* Search icon inside the button */}
+                  <Button className="rounded-full px-6" onClick={handleSearch}>
+                    <Search className="mr-2 h-4 w-4" />
                     Search
                   </Button>
                 </div>

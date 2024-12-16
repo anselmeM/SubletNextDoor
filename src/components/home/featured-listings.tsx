@@ -1,21 +1,40 @@
-import { useListingStore } from '@/lib/store/listing-store'; // Importing custom hook to access the listing store
-import { ListingGrid } from '../listings/listing-grid'; // Importing ListingGrid component to display listings
+import { useListingStore } from '@/lib/store/listing-store';
+import { ListingGrid } from '../listings/listing-grid';
 
-// FeaturedListings component to display a section of featured listings
+interface ListingState {
+  listings: any[]; 
+  isLoading: boolean;
+  error: Error | null;
+}
+
 export function FeaturedListings() {
-  // Accessing the listings from the listing store, filtering for available listings,
-  // sorting them by creation date in descending order, and taking the top 6
-  const listings = useListingStore((state) => 
-    state.listings
-      .filter(listing => listing.available) // Filter to include only available listings
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort listings by creation date, newest first
-      .slice(0, 6) // Limit the listings to the top 6
+  const { listings, isLoading, error } = useListingStore(
+    (state: ListingState) => ({
+      listings: state.listings
+        .filter(listing => listing.available)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 6),
+      isLoading: state.isLoading,
+      error: state.error,
+    })
   );
 
+  if (isLoading) {
+    return <div className="text-center py-12">Loading featured listings...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12 text-red-600">
+        Error loading listings: {error.message}
+      </div>
+    );
+  }
+
   return (
-    <section className="py-12 bg-gray-50"> {/* Section with padding and background color */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"> {/* Container for centering content */}
-        <div className="text-center"> {/* Centered text for the section header */}
+    <section className="py-12 bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Featured Listings
           </h2>
@@ -23,10 +42,11 @@ export function FeaturedListings() {
             Discover our most recent student sublets
           </p>
         </div>
-        {listings.length > 0 ? ( // Conditional rendering based on the availability of listings
-          <ListingGrid listings={listings} /> // Render the ListingGrid component with the listings
+
+        {listings.length > 0 ? (
+          <ListingGrid listings={listings} />
         ) : (
-          <div className="mt-8 text-center text-gray-500"> {/* Message when no listings are available */}
+          <div className="mt-8 text-center text-gray-500">
             <p>No listings available yet. Be the first to list your property!</p>
           </div>
         )}

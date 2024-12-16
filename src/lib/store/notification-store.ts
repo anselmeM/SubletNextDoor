@@ -13,9 +13,12 @@ export interface Notification {
   link?: string;
 }
 
+// Type for the notification payload
+type NotificationPayload = Omit<Notification, 'id' | 'createdAt' | 'read'>;
+
 interface NotificationState {
   notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => void;
+  addNotification: (notification: NotificationPayload) => void;
   markAsRead: (notificationId: string) => void;
   markAllAsRead: (userId: string) => void;
   clearAll: (userId: string) => void;
@@ -35,17 +38,22 @@ export const useNotificationStore = create<NotificationState>()(
           ...notification,
         };
 
-        set((state) => ({
-          notifications: [newNotification, ...state.notifications],
-        }));
+        set((state) => {
+          const updatedNotifications = [newNotification, ...state.notifications];
+
+          // Sort notifications by createdAt in descending order
+          updatedNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+          return {
+            notifications: updatedNotifications,
+          };
+        });
       },
 
       markAsRead: (notificationId) => {
         set((state) => ({
           notifications: state.notifications.map((notification) =>
-            notification.id === notificationId
-              ? { ...notification, read: true }
-              : notification
+            notification.id === notificationId ? { ...notification, read: true } : notification
           ),
         }));
       },
@@ -53,9 +61,7 @@ export const useNotificationStore = create<NotificationState>()(
       markAllAsRead: (userId) => {
         set((state) => ({
           notifications: state.notifications.map((notification) =>
-            notification.userId === userId
-              ? { ...notification, read: true }
-              : notification
+            notification.userId === userId ? { ...notification, read: true } : notification
           ),
         }));
       },
