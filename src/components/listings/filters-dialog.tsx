@@ -1,6 +1,7 @@
 import { X, Check } from 'lucide-react';
 import { Button } from '../ui/button';
 import { formatCurrency } from '@/lib/utils/format';
+import { useState } from 'react';
 
 interface FiltersDialogProps {
   isOpen: boolean;
@@ -21,26 +22,40 @@ const AMENITIES = ['Furnished', 'WiFi', 'Parking', 'Laundry', 'Air Conditioning'
 export function FiltersDialog({ isOpen, onClose, filters, onApplyFilters }: FiltersDialogProps) {
   if (!isOpen) return null;
 
-  const handlePropertyTypeChange = (type: string) => {
-    const updatedTypes = filters.propertyType.includes(type)
-      ? filters.propertyType.filter(t => t !== type)
-      : [...filters.propertyType, type];
-    onApplyFilters({ ...filters, propertyType: updatedTypes });
+  const [priceRange, setPriceRange] = useState(filters.priceRange);
+
+  const handlePriceChange = (e) => {
+    setPriceRange([priceRange[0], parseInt(e.target.value)]);
   };
 
-  const handleAmenityChange = (amenity: string) => {
-    const updatedAmenities = filters.amenities.includes(amenity)
-      ? filters.amenities.filter(a => a !== amenity)
-      : [...filters.amenities, amenity];
-    onApplyFilters({ ...filters, amenities: updatedAmenities });
+  const handleSelectionChange = (type: 'propertyType' | 'amenities', item: string) => {
+    const updatedSelection = filters[type].includes(item)
+      ? filters[type].filter(t => t !== item)
+      : [...filters[type], item];
+    onApplyFilters({ ...filters, [type]: updatedSelection });
   };
+
+  const handleReset = () => {
+    onApplyFilters({
+      priceRange: [0, 5000],
+      propertyType: [],
+      amenities: [],
+    });
+    setPriceRange([0, 5000]); // Reset local state as well
+  };
+
+  const handleApply = () => {
+    onApplyFilters({...filters, priceRange})
+    onClose();
+  }
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-md rounded-lg bg-white p-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Filters</h2>
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="outline" size="sm" onClick={onClose} aria-label="Close filters">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -53,15 +68,13 @@ export function FiltersDialog({ isOpen, onClose, filters, onApplyFilters }: Filt
               min="0"
               max="5000"
               step="100"
-              value={filters.priceRange[1]}
-              onChange={(e) => onApplyFilters({ 
-                ...filters, 
-                priceRange: [0, parseInt(e.target.value)] 
-              })}
+              value={priceRange[1]}
+              onChange={handlePriceChange}
               className="w-full"
+              aria-label="Price range"
             />
             <span className="text-sm text-gray-600">
-              Up to {formatCurrency(filters.priceRange[1])}
+              Up to {formatCurrency(priceRange[1])}
             </span>
           </div>
         </div>
@@ -72,16 +85,15 @@ export function FiltersDialog({ isOpen, onClose, filters, onApplyFilters }: Filt
             {PROPERTY_TYPES.map((type) => (
               <button
                 key={type}
-                onClick={() => handlePropertyTypeChange(type)}
+                onClick={() => handleSelectionChange('propertyType', type)}
                 className={`flex items-center rounded-md border p-2 text-sm ${
                   filters.propertyType.includes(type)
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
+                aria-label={`Select ${type} property type`}
               >
-                {filters.propertyType.includes(type) && (
-                  <Check className="mr-2 h-4 w-4" />
-                )}
+                {filters.propertyType.includes(type) && <Check className="mr-2 h-4 w-4" />}
                 {type}
               </button>
             ))}
@@ -94,16 +106,15 @@ export function FiltersDialog({ isOpen, onClose, filters, onApplyFilters }: Filt
             {AMENITIES.map((amenity) => (
               <button
                 key={amenity}
-                onClick={() => handleAmenityChange(amenity)}
+                onClick={() => handleSelectionChange('amenities', amenity)}
                 className={`flex items-center rounded-md border p-2 text-sm ${
                   filters.amenities.includes(amenity)
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
+                aria-label={`Select ${amenity} amenity`}
               >
-                {filters.amenities.includes(amenity) && (
-                  <Check className="mr-2 h-4 w-4" />
-                )}
+                {filters.amenities.includes(amenity) && <Check className="mr-2 h-4 w-4" />}
                 {amenity}
               </button>
             ))}
@@ -111,17 +122,10 @@ export function FiltersDialog({ isOpen, onClose, filters, onApplyFilters }: Filt
         </div>
 
         <div className="mt-6 flex justify-end space-x-4">
-          <Button
-            variant="outline"
-            onClick={() => onApplyFilters({
-              priceRange: [0, 5000],
-              propertyType: [],
-              amenities: [],
-            })}
-          >
+          <Button variant="outline" onClick={handleReset}>
             Reset
           </Button>
-          <Button onClick={onClose}>Apply Filters</Button>
+          <Button onClick={handleApply}>Apply Filters</Button>
         </div>
       </div>
     </div>
