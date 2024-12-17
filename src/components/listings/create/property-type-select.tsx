@@ -4,13 +4,14 @@ import { PROPERTY_TYPES } from '@/types/listing';
 
 interface PropertyTypeSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
+  optional?: boolean;
 }
 
 export const PropertyTypeSelect = forwardRef<HTMLSelectElement, PropertyTypeSelectProps>(
-  ({ error, ...props }, ref) => {
+  ({ error, optional, ...props }, ref) => {
     return (
       <div className="space-y-2">
-        <Label required>Property Type</Label>
+        <Label required={!optional}>Property Type</Label>
         <select
           ref={ref}
           className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
