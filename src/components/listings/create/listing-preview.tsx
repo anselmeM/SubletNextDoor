@@ -27,17 +27,15 @@ export function ListingPreview({ data }: ListingPreviewProps) {
             className="h-full w-full object-cover"
           />
           {data.images.length > 1 && (
-            <div className="absolute inset-x-0 bottom-4 flex justify-center">
-              <div className="flex space-x-2">
-                {data.images.slice(0, 4).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-2 w-2 rounded-full ${
-                      index === 0 ? 'bg-white' : 'bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
+            <div className="absolute bottom-4 right-4 flex space-x-2">
+              {data.images.slice(0, 4).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-2 w-2 rounded-full ${
+                    index === 0 ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -75,4 +73,50 @@ export function ListingPreview({ data }: ListingPreviewProps) {
 
           {data.propertyType && (
             <div>
-              <dt className="text-sm font-medium text-gray-500">Type</
+              <dt className="text-sm font-medium text-gray-500">Type</dt>
+              <dd className="mt-1 text-gray-900">{data.propertyType}</dd>
+            </div>
+          )}
+
+          {data.availableFrom && (
+            <div>
+              <dt className="flex items-center text-sm font-medium text-gray-500">
+                <Calendar className="mr-2 h-4 w-4" />
+                Available From
+              </dt>
+              <dd className="mt-1 text-gray-900">
+                {new Date(data.availableFrom).toLocaleDateString()}
+              </dd>
+            </div>
+          )}
+
+          {data.maxTenants && (
+            <div>
+              <dt className="flex items-center text-sm font-medium text-gray-500">
+                <Users className="mr-2 h-4 w-4" />
+                Max Tenants
+              </dt>
+              <dd className="mt-1 text-gray-900">{data.maxTenants}</dd>
+            </div>
+          )}
+        </div>
+
+        {data.amenities?.length ? (
+          <div className="mt-6 border-t pt-6">
+            <h4 className="text-sm font-medium text-gray-500">Amenities</h4>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {data.amenities.map((amenity) => (
+                <span
+                  key={amenity}
+                  className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700"
+                >
+                  {amenity}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}

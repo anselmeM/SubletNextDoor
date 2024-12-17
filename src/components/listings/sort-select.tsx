@@ -1,4 +1,3 @@
-
 import { ArrowDownAZ, ArrowUpAZ, Calendar, Star } from 'lucide-react';
 import { SortOption } from '@/types/listing';
 
@@ -25,11 +24,10 @@ export function SortSelect({ value, onChange }: SortSelectProps) {
         value={value}
         onChange={(e) => onChange(e.target.value as SortOption)}
         className="rounded-md border-gray-300 py-1 pl-3 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        aria-label="Select listing sort order" // Accessibility
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
-            {option.label} {option.icon}
+            {option.label}
           </option>
         ))}
       </select>
