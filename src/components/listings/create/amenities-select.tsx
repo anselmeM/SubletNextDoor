@@ -30,6 +30,8 @@ export function AmenitiesSelect({ value, onChange, error }: AmenitiesSelectProps
                 ? 'border-blue-500 bg-blue-50 text-blue-700'
                 : 'border-gray-200 hover:border-gray-300'
             }`}
+            aria-label={`${amenity} amenity. ${value.includes(amenity) ? 'Selected' : 'Not selected'}`} // Accessibility
+            aria-pressed={value.includes(amenity)} // Accessibility
           >
             {value.includes(amenity) && <Check className="mr-2 h-4 w-4" />}
             {amenity}
